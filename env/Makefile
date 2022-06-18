@@ -5,11 +5,6 @@ init: \
 	docker-up \
 	success-msg
 
-update: \
-	docker-clear \
-	docker-up \
-	success-msg
-
 
 docker-clear:
 	echo "Остановка существующих контейнеров проекта"
@@ -26,12 +21,6 @@ docker-up:
 get-permissions:
 	echo "Выдача прав доступа для каталогов с динамическим содержимым"
 	sudo chmod -R 777 ../back
-
-clone-back:
-	git clone https://gitlab.com/evgenii1452/back.git ../back
-
-clone-front:
-	git clone https://gitlab.com/evgenii1452/front.git ../front
 
 db-init:
 	echo "Инициализация БД"
