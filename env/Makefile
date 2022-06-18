@@ -5,6 +5,11 @@ init: \
 	docker-up \
 	success-msg
 
+update: \
+	docker-clear \
+	docker-up \
+	success-msg
+
 
 docker-clear:
 	echo "Остановка существующих контейнеров проекта"
@@ -40,3 +45,7 @@ hosts:
 
 exec-back:
 	sudo docker exec -it ws_php-fpm bash
+
+reset-db:
+	sudo rm -r ./docker/MySQL
+	mkdir docker/MySQL

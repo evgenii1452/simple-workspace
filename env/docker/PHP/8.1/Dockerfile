@@ -73,7 +73,7 @@ COPY --chown=www:www . /var/www
 #RUN cron
 #
 ## Set working directory
-WORKDIR /var/www/back
+WORKDIR /var/www
 
 # Change current user to www
 
