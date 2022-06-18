@@ -1,0 +1,7 @@
+/MySQL/*
+!/MySQL/.keep
+/Nginx/core
+!/Nginx/core
+/Nginx/Logs/*
+!/Nginx/Logs/.gitkeep
+.env

@@ -1,0 +1,88 @@
+version: '3.8'
+services:
+  nginx:
+    image: nginx:latest
+    container_name: ${PROJECT_NAME}_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/Nginx/core:/etc/nginx/conf.d
+      - ../:/var/www/
+      - ./docker/Nginx/Logs:/var/log/nginx/
+      - ./docker/Nginx/html:/usr/share/nginx/html/
+    links:
+      - php
+    restart: always
+    networks:
+      ws_net:
+        ipv4_address: ${IP_MASK}.2
+
+
+  php:
+    build: docker/PHP/8.1
+    container_name: ${PROJECT_NAME}_php-fpm
+    volumes:
+      - ../:/var/www/
+      - ./docker/PHP/local.ini:/usr/local/etc/php/conf.d/local.ini
+    links:
+#      - redis
+      - mysql
+    networks:
+      ws_net:
+        ipv4_address: ${IP_MASK}.7
+
+  #mysql
+  mysql:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    container_name: ${PROJECT_NAME}_mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=main
+      - MYSQL_USER=www
+      - MYSQL_PASSWORD=www
+    volumes:
+      - ./docker/MySQL:/var/lib/mysql
+      - ./docker/dumps/:/var/dumps/
+    restart: always
+    networks:
+      ws_net:
+        ipv4_address: ${IP_MASK}.8
+  #phpmyadmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: ${PROJECT_NAME}_phpmyadmin
+    ports:
+      - "8090:80"
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    networks:
+      ws_net:
+        ipv4_address: ${IP_MASK}.9
+
+#  frontend:
+#    build: docker/frontend
+#    container_name: ${PROJECT_NAME}_frontend
+#    ports:
+#      - "8081:8081"
+#    volumes:
+#      - ../:/var/www/
+#    links:
+#      - nginx
+#    networks:
+#      ws_net:
+#        ipv4_address: ${IP_MASK}.10
+
+
+networks:
+  ws_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${IP_MASK}.0/24
